@@ -1,13 +1,5 @@
-()
-{}
-[]
-'"
-.,;:
-this is a test 112test_test test_test
+module test;
 
-
-
-   
-
-
-   epic
+let x = fn (a: i32, b: i32) -> i32 {
+    a+b
+}

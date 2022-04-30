@@ -8,7 +8,7 @@ public class NamedDisplay : IDisplay {
         this.Name = name;
     }
     public void Print(string message) {
-        Console.WriteLine($"[{Name}] ");
+        Console.WriteLine($"[{Name}] {message}");
     }
     public void Print(string message, string filepath, FilePosition highlight)
     {

@@ -2,119 +2,58 @@ namespace jwl;
 
 using System.Collections.Generic;
 using System.IO;
+using System.Collections;
 
-public class TokenSequence : System.IDisposable
+public class TokenSequence : System.IDisposable, IEnumerable<Token>
 {
-
+    //token that will be returned when Peek() is called
+    private Lexer lexer;
+    private Token nextToken;
     private StreamReader reader;
     private IDisplay display;
     private string filePath;
-    private int line;
-    private int character;
-    private char prev;
+    private FilePosition pos;
 
-    public TokenSequence(string filePath, IDisplay display)
+    public TokenSequence(Lexer lexer, string filePath, IDisplay display)
     {
+        this.lexer = lexer;
         reader = new(filePath);
         this.filePath = filePath;
-        line = 0;
-        character = 0;
+        this.display = display;
+        //character is -1 so that the next read starts at 0
+        pos = new(0,-1);
+        //make sure Peek() is ready
+        nextToken = lexer.LexNext(reader, ref pos, filePath);
     }
-    public IEnumerable<Token> Sequence()
+    //returns an IEnumerator of all tokens in the file. Works lazily. Returns an EOF token as the last member of the iterator
+    public IEnumerator<Token> GetEnumerator()
     {
         while (HasNext())
         {
             yield return Next();
         }
-        yield return new TokenEOF(new(new(line, character), new(line, character), filePath));
+        yield return Next();
         yield break;
     }
-    public bool HasNext()
-    {
-        return !reader.EndOfStream;
+    IEnumerator IEnumerable.GetEnumerator() {
+        return GetEnumerator(); 
+    }
+    public bool HasNext() {
+        return nextToken is not TokenEOF;
     }
     public void Dispose()
     {
         reader.Dispose();
     }
-    public Token Next()
-    {
-        if (!HasNext())
-        {
-            return new TokenEOF(new(new(line, character), new(line, character), filePath));
-        }
-        char reading = getChar();
-        //skip all whitespace
-        while (char.IsWhiteSpace(reading))
-        {
-            if (!HasNext())
-            {
-                return new TokenEOF(new(new(line, character), new(line, character), filePath));
-            }
-            reading = getChar();
-        }
-        int startLine = line;
-        int startChar = character;
-        //single characters
-        switch (reading)
-        {
-            case '"':
-                return new TokenQuote(FileRange.single(new(line, character), filePath));
-            case '\'':
-                return new TokenApostrophe(FileRange.single(new(line, character), filePath));
-            case '.':
-                return new TokenDot(FileRange.single(new(line, character), filePath));
-            case ',':
-                return new TokenComma(FileRange.single(new(line, character), filePath));
-            case ';':
-                return new TokenSemicolon(FileRange.single(new(line, character), filePath));
-            case ':':
-                return new TokenColon(FileRange.single(new(line, character), filePath));
-            case '(':
-                return new TokenLeftParen(FileRange.single(new(line, character), filePath));
-            case ')':
-                return new TokenRightParen(FileRange.single(new(line, character), filePath));
-            case '{':
-                return new TokenLeftCurly(FileRange.single(new(line, character), filePath));
-            case '}':
-                return new TokenRightCurly(FileRange.single(new(line, character), filePath));
-            case '[':
-                return new TokenLeftSquare(FileRange.single(new(line, character), filePath));
-            case ']':
-                return new TokenRightSquare(FileRange.single(new(line, character), filePath));
-        }
-        System.Text.StringBuilder sb = new();
-        if (TokenName.ValidFirstChar(reading))
-        {
-            //lex name
-            sb.Append(reading);
-            while (HasNext() && TokenName.ValidBodyChar((char)reader.Peek())) {
-                sb.Append(getChar());
-            }
-            return new TokenName(new FileRange(new(startLine,startChar), new(line, character), filePath), sb.ToString());
-        }
-        while(HasNext() && !TokenSymbol.IsSeparator((char)reader.Peek())) {
-            //lex symbol
-            sb.Append(getChar());
-        }
-        if (sb.Length == 0) {
-            //skip unneeded separator
-            getChar();
-            return Next();
-        }
-        return new TokenSymbol(new FileRange(new(startLine,startChar),new(line,character), filePath), sb.ToString());
+    //returns the next token and advances
+    public Token Next() {
+        Token tmp = nextToken;
+        nextToken = lexer.LexNext(reader, ref pos, filePath);
+        return tmp;
     }
-    //gets next char, incrementing line and character
-    //make sure you aren't at end of stream before calling
-    private char getChar()
-    {
-        char reading = (char)reader.Read();
-        character++;
-        if (reading == '\r' || reading == '\n')
-        {
-            line++;
-            character = 0;
-        }
-        return reading;
+    //returns the next token without advancing
+    public Token Peek() {
+        return nextToken;
     }
+    
 }
