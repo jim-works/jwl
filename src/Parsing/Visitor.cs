@@ -13,4 +13,9 @@ public abstract class Visitor {
     public abstract void Visit(AssignmentStatementAST ast);
     public abstract void Visit(DeclarationStatementAST ast);
     public abstract void Visit(CallAST ast);
+    //Expressions
+    public abstract void Visit(ExpressionAST ast);
+    public abstract void Visit(ArithmeticAST ast);
+    public abstract void Visit(FunctionDefintionAST ast);
+    public abstract void Visit(ClassDefinitionAST ast);
 }
