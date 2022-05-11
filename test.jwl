@@ -1,5 +1,8 @@
 module test;
 
+import import1;
+import import2;
+
 let x = fn (a: i32, b: i32) -> i32 {
     a+b
 }

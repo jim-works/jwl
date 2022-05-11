@@ -6,6 +6,7 @@ public class FileAST : AST {
     
     public DeclareModuleAST? ModDeclaration;
     public List<ImportModuleAST>? Imports;
+    public List<StatementAST> Statements = new List<StatementAST>();
     
     public FileAST(ProgramAST parent) {
         Parent = parent;
@@ -21,6 +22,9 @@ public class FileAST : AST {
             {
                 v.Visit(item);
             }
+        }
+        foreach (var item in Statements) {
+            v.Visit(item);
         }
         v.Visit(this);
     }
