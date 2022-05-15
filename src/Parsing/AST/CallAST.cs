@@ -1,11 +1,11 @@
 namespace jwl.SyntaxTree;
 
 public class CallAST : AST {
-    public string Name;
+    public Name Name;
     public CallArgumentsAST? args;
 
 
-    public CallAST(string name) {
+    public CallAST(Name name) {
         this.Name = name;
     }
     

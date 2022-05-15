@@ -34,16 +34,17 @@ public class StatementAST : AST {
         switch (Type) {
             case StatementType.ASSIGNMENT:
                 Debug.Assert(assignment != null);
-                v.Visit(assignment);
+                assignment.Accept(v);
                 break;
             case StatementType.DECLARATION:
                 Debug.Assert(declaration != null);
-                v.Visit(declaration);
+                declaration.Accept(v);
                 break;
             case StatementType.CALL:
                 Debug.Assert(call != null);
-                v.Visit(call);
+                call.Accept(v);
                 break;
         }
+        v.Visit(this);
     }
 }

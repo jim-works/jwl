@@ -1,6 +1,6 @@
 module test;
 
-import import1;
+import import1.submodule;
 import import2;
 
 let x = fn (a: i32, b: i32) -> i32 {

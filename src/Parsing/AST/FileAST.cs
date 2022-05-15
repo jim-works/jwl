@@ -20,11 +20,11 @@ public class FileAST : AST {
         if (Imports != null) {
             foreach (var item in Imports)
             {
-                v.Visit(item);
+                item.Accept(v);
             }
         }
         foreach (var item in Statements) {
-            v.Visit(item);
+            item.Accept(v);
         }
         v.Visit(this);
     }

@@ -1,9 +1,9 @@
 namespace jwl.SyntaxTree;
 
 public class ImportModuleAST : AST {
-    public string Name;
+    public Name Name;
 
-    public ImportModuleAST(string name) {
+    public ImportModuleAST(Name name) {
         Name = name;
     }
 

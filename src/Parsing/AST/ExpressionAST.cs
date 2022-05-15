@@ -45,20 +45,21 @@ public class ExpressionAST : AST
         {
             case StatementType.ARITHMETIC:
                 Debug.Assert(arithmetic != null);
-                v.Visit(arithmetic);
+                arithmetic.Accept(v);
                 break;
             case StatementType.CALL:
                 Debug.Assert(call != null);
-                v.Visit(call);
+                call.Accept(v);
                 break;
             case StatementType.CLASS_DEF:
                 Debug.Assert(classDef != null);
-                v.Visit(classDef);
+                classDef.Accept(v);
                 break;
             case StatementType.FUNCTION_DEF:
                 Debug.Assert(functionDef != null);
-                v.Visit(functionDef);
+                functionDef.Accept(v);
                 break;
         }
+        v.Visit(this);
     }
 }

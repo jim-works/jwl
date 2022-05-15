@@ -1,9 +1,9 @@
 namespace jwl.SyntaxTree;
 
 public class DeclareModuleAST : AST {
-    public string Name;
+    public Name Name;
 
-    public DeclareModuleAST(string name) {
+    public DeclareModuleAST(Name name) {
         Name = name;
     }
 

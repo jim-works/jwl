@@ -28,13 +28,13 @@ public class PrintVisitor : Visitor
     }
     //statements
     public override void Visit(StatementAST ast) {
-        print($"StatementAST");
+        print($"StatementAST {ast.Type}");
     }
     public override void Visit(AssignmentStatementAST ast) {
         print($"Assignment");
     }
     public override void Visit(DeclarationStatementAST ast) {
-        print($"Declaration");
+        print($"Declaration {ast.variable}");
     }
     public override void Visit(CallAST ast) {
         print($"Call");
