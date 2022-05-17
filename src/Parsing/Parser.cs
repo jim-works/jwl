@@ -101,6 +101,10 @@ public class Parser : CompilerLayer<TokenSequence, AST> {
             input.Next(); //eat ;
             return parseStatement(input);
         }
+        if (next is TokenLeftCurly) {
+            BlockAST? block = parseBlock(input);
+            return block == null ? null : new StatementAST(block);
+        }
         if (next is TokenName name) {
             if (name.symbol == "let") {
                 DeclarationStatementAST? dec = parseDeclaration(input);
@@ -120,6 +124,19 @@ public class Parser : CompilerLayer<TokenSequence, AST> {
             }
         }
         return null;
+    }
+    private BlockAST? parseBlock(TokenSequence input) {
+        consume<TokenLeftCurly>(input, "expected {");
+        BlockAST block = new BlockAST();
+        while (input.Peek() is not TokenRightCurly) {
+            if(parseStatement(input) is not StatementAST stmt) {
+                syntaxError("Expected statement or }", input.Peek());
+                return null;
+            }
+            block.Statements.Add(stmt);
+        }
+        input.Next(); //eat }
+        return block;
     }
     private FunctionDefintionAST? parseFunctionDef(TokenSequence input) {
         if (input.Peek() is not TokenName name || name.symbol != "fn") {
@@ -161,6 +178,11 @@ public class Parser : CompilerLayer<TokenSequence, AST> {
         } else {
             input.Next(); //eat =>
         }
+        if (parseStatement(input) is not StatementAST stmt) {
+            syntaxError("expected statement", input.Peek());
+            return null;
+        }
+        fn.Body = stmt;
         return fn;
     }
     private VarDecAST? parseFunctionArg(TokenSequence input) {

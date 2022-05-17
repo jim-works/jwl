@@ -13,6 +13,7 @@ public abstract class Visitor {
     public abstract void Visit(AssignmentStatementAST ast);
     public abstract void Visit(DeclarationStatementAST ast);
     public abstract void Visit(CallAST ast);
+    public abstract void Visit(BlockAST ast);
     //Expressions
     public abstract void Visit(ExpressionAST ast);
     public abstract void Visit(ArithmeticAST ast);

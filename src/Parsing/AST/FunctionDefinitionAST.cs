@@ -6,6 +6,7 @@ public class FunctionDefintionAST : AST
 {
     public Name? ReturnType;
     public List<VarDecAST> Args = new List<VarDecAST>();
+    public StatementAST? Body;
 
     public override void Accept(Visitor v)
     {
@@ -13,6 +14,7 @@ public class FunctionDefintionAST : AST
         {
             arg.Accept(v);
         }
+        Body?.Accept(v);
         v.Visit(this);
     }
 }

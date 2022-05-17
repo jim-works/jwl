@@ -39,6 +39,9 @@ public class PrintVisitor : Visitor
     public override void Visit(CallAST ast) {
         print($"Call");
     }
+    public override void Visit(BlockAST ast) {
+        print($"Block");
+    }
     //Expressions
     public override void Visit(ExpressionAST ast) {
         print("Expression");
