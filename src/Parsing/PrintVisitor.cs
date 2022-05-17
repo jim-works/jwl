@@ -47,9 +47,13 @@ public class PrintVisitor : Visitor
         print("Arithmetic");
     }
     public override void Visit(FunctionDefintionAST ast) {
-        print("Function Definition");
+        print($"Function Definition {ast.ReturnType?.ToString() ?? "inferred return type"}");
     }
     public override void Visit(ClassDefinitionAST ast) {
         print("Class Definition");
+    }
+    public override void Visit(VarDecAST ast)
+    {
+        print($"Variable Dec {ast.VariableName} : {ast.TypeName?.ToString() ?? "inferred type"}");
     }
 }
